@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#Specific ignores
+.vscode/*.*
+chat_source.txt
