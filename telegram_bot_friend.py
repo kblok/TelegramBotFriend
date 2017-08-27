@@ -129,8 +129,8 @@ def main():
     """Entry point"""
 
     try:
-        opts, _ = getopt.getopt(sys.argv[1:], 's:t:l:n', ['source', 'token',
-                                                            'langauge', 'name'])
+        opts, _ = getopt.getopt(sys.argv[1:], 's:t:l:n:x', ['source', 'token',
+                                                            'language', 'name'])
     except getopt.GetoptError:
         sys.exit(2)
 
