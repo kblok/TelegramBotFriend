@@ -52,7 +52,7 @@ class TelegramBotFriend(object):
 
     def add_text_to_model(self, text):
         """Add a new line in the source_text"""
-        with open(self.source_text) as chat_file:
+        with open(self.source_text, "a") as chat_file:
             chat_file.write(text + "\n")
 
     def is_stop_word(self, word):
