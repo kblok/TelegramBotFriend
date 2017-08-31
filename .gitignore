@@ -103,3 +103,4 @@ ENV/
 #Specific ignores
 .vscode/*.*
 chat_source.txt
+chat_original.txt
