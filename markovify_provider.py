@@ -1,26 +1,18 @@
 """Text provider based on Marcovify"""
+import re
 import markovify
 import nltk
-import re
 
 class MarkovifyProvider(object):
     """Text provider based on Marcovify"""
-    def __init__(self, source_text, language):
-        self.source_text = source_text
+    def __init__(self, language, text_provider):
+        self.text_provider = text_provider
         self.load()
-        self.source_text = source_text
         self.language = language
 
     def load(self):
         """Parses the text file in self.source_text and loads the model with markofy"""
-        with open(self.source_text) as source_file:
-            text = source_file.read()
-            self.model = markovify.NewlineText(text)
-
-    def add_text(self, text):
-        """Add a new line in the source_text"""
-        with open(self.source_text, "a") as chat_file:
-            chat_file.write(text + "\n")
+        self.model = markovify.NewlineText(self.text_provider.get_text())
 
     def is_stop_word(self, word):
         """Checks whether a word is an stop word or not in the language specified in the class"""

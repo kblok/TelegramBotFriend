@@ -7,6 +7,8 @@ import sys
 from telegram.ext import Filters, MessageHandler, Updater
 import getopt
 from markovify_provider import MarkovifyProvider
+from dropbox_text_provider import DropboxTextProvider
+import os
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -73,7 +75,7 @@ class TelegramBotFriend(object):
                 text = bot.bot_friend.provider.get_message(text)
                 bot.send_message(chat_id=update.message.chat_id, text=text)
 
-            bot.bot_friend.provider.add_text(update.message.text)
+            bot.bot_friend.provider.text_provider.add_text(update.message.text)
 
 
     @staticmethod
@@ -86,14 +88,13 @@ def main():
     """Entry point"""
 
     try:
-        opts, _ = getopt.getopt(sys.argv[1:], 's:t:l:n:p:x', ['source', 'token',
-                                                            'language', 'name', 'provider'])
+        opts, _ = getopt.getopt(sys.argv[1:], 't:l:n:p:d:f:x', ['source', 'token',
+                                                            'language', 'name', 'provider', 
+                                                            "dropboxtoken", "dropboxfile"])
     except getopt.GetoptError:
         sys.exit(2)
 
     for opt, arg in opts:
-        if opt in ('-s', '--source'):
-            source = arg
         if opt in ('-t', '--toke'):
             token = arg
         if opt in ('-l', '--language'):
@@ -102,9 +103,14 @@ def main():
             name = arg
         if opt in ('-p', '--provider'):
             provider = arg
+        if opt in ('-d', '--dropboxtoken'):
+            dropbox_access_token = arg
+        if opt in ('-f', '--dropboxfile'):
+            dropbox_file = arg
 
     #If we code new providers we'll need a switch here
-    provider = MarkovifyProvider(source, language)
+    text_provider = DropboxTextProvider(dropbox_access_token, dropbox_file)
+    provider = MarkovifyProvider(language, text_provider)
     provider.load()
     TelegramBotFriend(token, name, provider)
 
