@@ -7,6 +7,7 @@ from markovify_provider import MarkovifyProvider
 from dropbox_text_provider import DropboxTextProvider
 from telegram_client import TelegramClient
 from meme_provider import MemeProvider
+from abstract_bot import AbstractBot
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -14,7 +15,7 @@ sys.setdefaultencoding('utf8')
 def main():
     """Entry point"""
     auto_feed = False
-    
+
     #Try to get params from env
     if not os.environ.get('BOT_FRIEND_TOKEN') is None:
         token = os.environ.get('BOT_FRIEND_TOKEN')
@@ -34,9 +35,9 @@ def main():
 
     #Try to get params from arguments
     try:
-        opts, _ = getopt.getopt(sys.argv[1:], 't:l:n:d:f:a:m:x', 
-            ['source', 'token', 'language', 'name',
-            'dropboxtoken', 'dropboxfile', 'autofeed', 'memefile'])
+        opts, _ = getopt.getopt(sys.argv[1:], 't:l:n:d:f:a:m:x',
+                                ['source', 'token', 'language', 'name',
+                                 'dropboxtoken', 'dropboxfile', 'autofeed', 'memefile'])
 
     except getopt.GetoptError:
         sys.exit(2)
@@ -57,11 +58,13 @@ def main():
         if opt in ('-m', '--memefile'):
             meme_file = arg
 
+
     text_provider = DropboxTextProvider(dropbox_access_token, dropbox_file)
     provider = MarkovifyProvider(language, text_provider)
     meme_text_provider = DropboxTextProvider(dropbox_access_token, meme_file)
     meme_provider = MemeProvider(meme_text_provider)
-    TelegramClient(token, name, provider, auto_feed, meme_provider)
+    abstract_bot = AbstractBot(name, provider, auto_feed, meme_provider)
+    TelegramClient(abstract_bot, token)
 
 
 if __name__ == '__main__':
