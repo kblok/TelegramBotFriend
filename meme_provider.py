@@ -16,7 +16,7 @@ class MemeProvider(object):
                 self.list[key_val[0]] = []
 
             self.list[key_val[0]].append(key_val[1])
-    
+
 
     def get_random_meme(self, text):
         """Gets a random meme based on a text"""
