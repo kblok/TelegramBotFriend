@@ -1,5 +1,6 @@
 """Telegram bot runner"""
 # encoding=utf8
+import os
 import sys
 import getopt
 from markovify_provider import MarkovifyProvider
@@ -14,9 +15,27 @@ def main():
     """Entry point"""
     auto_feed = False
     
+    #Try to get params from env
+    if not os.environ.get('BOT_FRIEND_TOKEN') is None:
+        token = os.environ.get('BOT_FRIEND_TOKEN')
+    if not os.environ.get('BOT_FRIEND_LANGUAGE') is None:
+        language = os.environ.get('BOT_FRIEND_LANGUAGE')
+    if not os.environ.get('BOT_FRIEND_NAME') is None:
+        name = os.environ.get('BOT_FRIEND_NAME')
+    if not os.environ.get('BOT_FRIEND_DROPBOX_ACCESS_TOKEN') is None:
+        dropbox_access_token = os.environ.get('BOT_FRIEND_DROPBOX_ACCESS_TOKEN')
+    if not os.environ.get('BOT_FRIEND_DROPBOX_FILE') is None:
+        dropbox_file = os.environ.get('BOT_FRIEND_DROPBOX_FILE')
+    if not os.environ.get('BOT_FRIEND_AUTO_FEED') is None:
+        auto_feed = os.environ.get('BOT_FRIEND_AUTO_FEED') == "1"
+    if not os.environ.get('BOT_FRIEND_MEME_FILE') is None:
+        meme_file = os.environ.get('BOT_FRIEND_MEME_FILE')
+
+
+    #Try to get params from arguments
     try:
-        opts, _ = getopt.getopt(sys.argv[1:], 't:l:n:p:d:f:a:m:x', 
-            ['source', 'token', 'language', 'name', 'provider',
+        opts, _ = getopt.getopt(sys.argv[1:], 't:l:n:d:f:a:m:x', 
+            ['source', 'token', 'language', 'name',
             'dropboxtoken', 'dropboxfile', 'autofeed', 'memefile'])
 
     except getopt.GetoptError:
@@ -29,8 +48,6 @@ def main():
             language = arg
         if opt in ('-n', '--name'):
             name = arg
-        if opt in ('-p', '--provider'):
-            provider = arg
         if opt in ('-d', '--dropboxtoken'):
             dropbox_access_token = arg
         if opt in ('-f', '--dropboxfile'):
@@ -40,7 +57,6 @@ def main():
         if opt in ('-m', '--memefile'):
             meme_file = arg
 
-    #If we code new providers we'll need a switch here
     text_provider = DropboxTextProvider(dropbox_access_token, dropbox_file)
     provider = MarkovifyProvider(language, text_provider)
     meme_text_provider = DropboxTextProvider(dropbox_access_token, meme_file)
