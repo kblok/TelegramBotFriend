@@ -14,7 +14,7 @@ sys.setdefaultencoding('utf8')
 class TelegramClient(object):
     """Telegram Client"""
 
-    def __init__(self, token, trigger_word, provider, auto_feed):
+    def __init__(self, token, trigger_word, provider, auto_feed, meme_provider):
 
         #Setup class props
         self.chat_count = {}
@@ -22,6 +22,7 @@ class TelegramClient(object):
         self.trigger_word = trigger_word
         self.provider = provider
         self.auto_feed = auto_feed
+        self.meme_provider = meme_provider
 
         #Setup Login
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -39,20 +40,6 @@ class TelegramClient(object):
         dispatcher.add_error_handler(self.error)
         print "We're ready to go"
         updater.idle()
-
-    @staticmethod
-    def get_meme(text):
-        matches = []
-
-        for word in text.split(" "):
-            for f in (y for y in os.listdir("/Users/Neo/Dropbox/Memes/") if word + "_" in y and not word in nltk.corpus.stopwords.words("Spanish")):
-                if(f not in matches):
-                    matches.append(f)
-        
-        if len(matches) == 0:
-            return None
-        else:
-            return "/Users/Neo/Dropbox/Memes/" + matches[random.randint(0, len(matches))]
 
     @staticmethod
     def reply(bot, update):
@@ -74,10 +61,9 @@ class TelegramClient(object):
             bot.send_message(chat_id=update.message.chat_id, text=text)
 
             #Meme check
-            meme = bot.bot_friend.get_meme(text)
+            meme = bot.bot_friend.meme_provider.get_random_meme(text)
             if not meme is None:
-                with open(meme, 'rb') as f:
-                    bot.send_photo(chat_id=update.message.chat_id, photo=f)
+                bot.send_photo(chat_id=update.message.chat_id, photo=meme)
 
         #Save new data
         else:
