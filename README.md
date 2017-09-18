@@ -16,15 +16,25 @@ You can download your chat history using [this extension](https://chrome.google.
 
 After picking your source text you might need to process it, e.g. You might need to remove urls from your history, or special characters.
 
+### Dropbox API
+
+In order to make the bot easy to install in a docker container, the data source and the meme list file will be fetched from a Dropbox folder, so the bot and feed that file with new data and you don't have to think about the container storage.
+
+So you will need to create a new dropbox token and set that token as an argument.
+
 ## Usage
 
 ```
-python telegram_bot_friend.py  -s "[your history file name]" -t "[telegram bot token]" -l "[language]" -n "[boot name]"
+python bot_friend.py -t "[telegram bot token]" -l "[language]" -n "[boot name]" -d "[dropbox token]" -f "[data source file]" -m "[meme list file]" -a [1|0]
 ```
- * **-s --source**: Chat history path
  * **-t --token**: It's the Telegram token BotFather provided when the bot was created
  * **-l --language**: Language used by NLTK to detect stop words
  * **-n --name**: Trigger name. TelegramBotFriend will send a message when that name is mentioned in any message
- 
- 
- 
+ * **-d --dropboxtoken**: Dropbox Token where the Source file is located
+ * **-f --dropboxfile**: Data source file with the chat history
+ * **-m --memefile**: Comma separated file with the meme list, expressed as "trigger word,meme url"
+ * **-a --autofeed**: If 1 the bot will feed the chat source with new incoming messages
+
+## Docker install
+
+The bot can be installed in a docker container using the docker-compose.yml file as a template
