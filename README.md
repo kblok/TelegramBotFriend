@@ -34,6 +34,7 @@ python bot_friend.py -t "[telegram bot token]" -l "[language]" -n "[boot name]" 
  * **-f --dropboxfile**: Data source file with the chat history
  * **-m --memefile**: Comma separated file with the meme list, expressed as "trigger word,meme url"
  * **-a --autofeed**: If 1 the bot will feed the chat source with new incoming messages
+ * **-e --joinevery**: Sets how many messages the bot should wait before stepping into the conversation. It will join after a random number of messages between joinevery and joinevery * 2
 
 ## Docker install
 

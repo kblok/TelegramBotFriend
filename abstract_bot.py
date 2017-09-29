@@ -6,7 +6,7 @@ import re
 class AbstractBot(object):
     """Generic bot"""
 
-    def __init__(self, trigger_word, provider, auto_feed, meme_provider):
+    def __init__(self, trigger_word, provider, auto_feed, meme_provider, join_every):
 
         #Setup class props
         self.chat_count = {}
@@ -15,6 +15,7 @@ class AbstractBot(object):
         self.provider = provider
         self.auto_feed = auto_feed
         self.meme_provider = meme_provider
+        self.join_every = join_every
 
     def process_incoming_message(self, chat_id, text):
         """Incoming message handlerr"""
@@ -43,7 +44,7 @@ class AbstractBot(object):
             chat_count_dic[chat_id] = chat_count_dic[chat_id] + 1
 
             ##He'll join after a random number of messages between 5 and 15
-            frequency = random.randint(5, 15)
+            frequency = random.randint(self.join_every, self.join_every * 2)
             if chat_count_dic[chat_id] > frequency:
                 chat_count_dic[chat_id] = 0
                 text = self.provider.get_message(text)

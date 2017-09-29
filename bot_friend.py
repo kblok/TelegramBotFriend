@@ -15,7 +15,8 @@ sys.setdefaultencoding('utf8')
 def main():
     """Entry point"""
     auto_feed = False
-
+    join_every = 5
+    
     #Try to get params from env
     if not os.environ.get('BOT_FRIEND_TOKEN') is None:
         token = os.environ.get('BOT_FRIEND_TOKEN')
@@ -31,13 +32,15 @@ def main():
         auto_feed = os.environ.get('BOT_FRIEND_AUTO_FEED') == "1"
     if not os.environ.get('BOT_FRIEND_MEME_FILE') is None:
         meme_file = os.environ.get('BOT_FRIEND_MEME_FILE')
+    if not os.environ.get('BOT_FRIEND_JOIN_EVERY') is None:
+        join_every = os.environ.get('BOT_FRIEND_JOIN_EVERY')
 
 
     #Try to get params from arguments
     try:
-        opts, _ = getopt.getopt(sys.argv[1:], 't:l:n:d:f:a:m:x',
+        opts, _ = getopt.getopt(sys.argv[1:], 't:l:n:d:f:a:m:e:x',
                                 ['source', 'token', 'language', 'name',
-                                 'dropboxtoken', 'dropboxfile', 'autofeed', 'memefile'])
+                                 'dropboxtoken', 'dropboxfile', 'autofeed', 'memefile', 'joinevery'])
 
     except getopt.GetoptError:
         sys.exit(2)
@@ -57,13 +60,15 @@ def main():
             auto_feed = True
         if opt in ('-m', '--memefile'):
             meme_file = arg
+        if opt in ('-e', '--joinevery'):
+            join_every = int(arg)
 
 
     text_provider = DropboxTextProvider(dropbox_access_token, dropbox_file)
     provider = MarkovifyProvider(language, text_provider)
     meme_text_provider = DropboxTextProvider(dropbox_access_token, meme_file)
     meme_provider = MemeProvider(meme_text_provider)
-    abstract_bot = AbstractBot(name, provider, auto_feed, meme_provider)
+    abstract_bot = AbstractBot(name, provider, auto_feed, meme_provider, join_every)
     TelegramClient(abstract_bot, token)
 
 
